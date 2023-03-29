@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+    id("org.barfuin.gradle.taskinfo") version "2.1.0"
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+project.tasks.register("simpleTask") {
+    doFirst {
+        println 'Hello'
+    }
+    doLast {
+        println 'Hello Last'
+    }
+}
+
+task createYml() {
+    try {
+        InputStream is;
+        OutputStream os;
+        try {
+            os = new File("application.yml").newOutputStream();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        finally {
+            if(is != null){
+                is.close();
+            }
+            if(os != null){
+                os.close();
+            }
+        }
+    }
+    catch (URISyntaxException e){
+        e.printStackTrace()
+    }
+}
+
+build.dependsOn createYml
+build.dependsOn simpleTask
+
+project.plugins.each {
+    println it
+}
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
